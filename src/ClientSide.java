@@ -5,21 +5,21 @@ public class ClientSide {
     private Socket socket = null;
     private DataOutputStream out = null;
     private BufferedReader in = null;
-    private BufferedReader echo = null;
+    private DataInputStream echo = null;
 
     public ClientSide(String address, int port) {
         try {
             socket = new Socket(address, port);
             System.out.println("Connected");
             in = new BufferedReader(new InputStreamReader(System.in));
-            echo = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            echo = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
             out = new DataOutputStream(socket.getOutputStream());
 
             // Start a thread to handle incoming messages
             new Thread(() -> {
                 try {
                     String serverResponse;
-                    while ((serverResponse = echo.readLine()) != null) {
+                    while ((serverResponse = echo.readUTF()) != null) {
                         System.out.println(serverResponse);
                     }
                 } catch (IOException e) {

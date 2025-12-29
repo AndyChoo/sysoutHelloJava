@@ -5,7 +5,7 @@ public class ServerSide {
     private Socket socket = null;
     private ServerSocket server = null;
     private DataInputStream in = null;
-    private PrintWriter out;
+    private DataOutputStream out;
 
     public ServerSide(int port) {
         try {
@@ -15,14 +15,13 @@ public class ServerSide {
             socket = server.accept();
             System.out.println("Client accepted");
             in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
-            out = new PrintWriter(socket.getOutputStream());
-            out.println("echo from server...");
+            out = new DataOutputStream(socket.getOutputStream());
             String line = "";
             while (!line.equals("bye")) {
                 try {
                     line = in.readUTF();
                     System.out.println(line);
-                    // out.println("echo from server: " + line);
+                    out.writeUTF("echo from server: " + line);
                 } catch(IOException i) {
                     System.out.println(i);
                 }
